@@ -45,5 +45,5 @@ runs:
         fi
       shell: bash
 branding:
-  icon: activity
+  icon: eye
   color: gray-dark
