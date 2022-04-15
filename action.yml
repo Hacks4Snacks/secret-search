@@ -1,0 +1,5 @@
+name: "secret-search"
+description: "Detect secrets within a code base with Yelp's detect-secrets tool"
+runs:
+  using: "docker"
+  image: "Dockerfile"
