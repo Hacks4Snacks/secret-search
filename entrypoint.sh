@@ -15,4 +15,4 @@ if [ ! -r "$BASELINE_FILE" ]; then
 fi
 
 detect-secrets -v audit "$BASELINE_FILE"
-exec detect-secrets scan "$ADDL_ARGS"
+detect-secrets scan "$ADDL_ARGS"
