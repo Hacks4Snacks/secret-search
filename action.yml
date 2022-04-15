@@ -1,5 +1,46 @@
 name: "secret-search"
 description: "Detect secrets within a code base with Yelp's detect-secrets tool"
 runs:
-  using: "docker"
-  image: "Dockerfile"
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v2
+
+    - name: Set Python 3 as default
+
+      uses: actions/setup-python@v1
+
+      with:
+        python-version: 3
+
+    - name: Install detect-secrets using pip
+
+      run: pip install detect-secrets
+
+      shell: bash
+
+    - name: Run detect-secrets tool
+
+      run: |
+        detect-secrets --version
+        detect-secrets scan --all-files --force-use-all-plugins --exclude-files FETCH_HEAD > ${{ env.Pipeline.Workspace }}/tmp/detect-secrets.json
+      shell: bash
+
+    - name: Publish results in the Pipeline Artifact
+
+      uses: actions/upload-artifact@v2
+
+      with:
+        path: ${{ env.Pipeline.Workspace }}/tmp/detect-secrets.json
+
+    - name: Analyzing detect-secrets results
+
+      run: |
+        RESULT=$(cat ${{ env.Pipeline.Workspace }}/tmp/detect-secrets.json | jq -c -r '.results | length')
+        if [ $RESULT -gt 0 ]; then
+           msg="Secrets were detected in code. $RESULT file(s) affected. Review artifact file for more information."
+           echo $msg
+           exit 1
+        else
+           echo "No secrets detected."
+        fi
+      shell: bash
