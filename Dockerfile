@@ -1,19 +1,14 @@
 FROM python:3.9
 
+RUN pip install --no-cache-dir detect-secrets 
 
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update && apt-get install -y \
-    bash \
-    git \
-    less \
-    openssh-server \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && pip install detect-secrets
+COPY entrypoint.sh /tmp/entrypoint.sh
+RUN groupadd -r secret-scan && useradd --no-log-init -r -g secret-scan secret-scan \
+    && chmod +x /tmp/entrypoint.sh
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+USER secret-scan
+WORKDIR /tmp
 
 ENV REQUIRE_BASELINE=0 ADDL_ARGS="" BASELINE_FILE="./.secrets.baseline"
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/tmp/entrypoint.sh"]
