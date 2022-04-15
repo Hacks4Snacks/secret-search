@@ -44,3 +44,6 @@ runs:
            echo "No secrets detected."
         fi
       shell: bash
+branding:
+  icon: activity
+  color: gray-dark
