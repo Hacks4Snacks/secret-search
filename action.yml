@@ -5,6 +5,14 @@ inputs:
     description: "File to Exclude from the scan"
     required: false
     default: "NOFILETOEXCLUDE"
+  fail-on-error:
+    description: "Fail the pipeline if any secrets are detected"
+    required: false
+    default: "true"
+  failure-count:
+    description: "Number of secrets to fail the pipeline"
+    required: false
+    default: "0"
 runs:
   using: "composite"
   steps:
@@ -41,7 +49,7 @@ runs:
 
       run: |
         RESULT=$(cat ${{ env.Pipeline.Workspace }}/tmp/detect-secrets.json | jq -c -r '.results | length')
-        if [ $RESULT -gt 0 ]; then
+        if [[ ${{ inputs.fail-on-error }} == "true" && $RESULT -gt $((${{ inputs.failure-count }})) ]]; then
            msg="Secrets were detected in code. $RESULT file(s) affected. Review artifact file for more information."
            echo $msg
            exit 1
