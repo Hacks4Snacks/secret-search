@@ -5,6 +5,7 @@
 
 ### Usage
 
+#### Basic
 ```
 ---
 on:
@@ -21,4 +22,67 @@ jobs:
         uses: actions/checkout@v1
       - name: Execute secret-search
         uses: Hacks4Snacks/secret-search@main
+```
+
+#### With Path Filter
+```
+---
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  secret-search-job:
+    runs-on: 'ubuntu-latest'
+    name: Job to scan for secrets
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Execute secret-search
+        uses: Hacks4Snacks/secret-search@main
+        with:
+          exclude-file: 'test.txt'
+```
+
+#### With File Failure Limit
+```
+---
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  secret-search-job:
+    runs-on: 'ubuntu-latest'
+    name: Job to scan for secrets
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Execute secret-search
+        uses: Hacks4Snacks/secret-search@main
+        with:
+          failure-count: '5'
+```
+
+#### Do Not Fail On Detection
+```
+---
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  secret-search-job:
+    runs-on: 'ubuntu-latest'
+    name: Job to scan for secrets
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Execute secret-search
+        uses: Hacks4Snacks/secret-search@main
+        with:
+          fail-on-error: 'false'
 ```

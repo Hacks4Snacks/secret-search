@@ -53,6 +53,9 @@ runs:
            msg="Secrets were detected in code. $RESULT file(s) affected. Review artifact file for more information."
            echo $msg
            exit 1
+        elif [[ ${{ inputs.fail-on-error }} == "false" && $RESULT -gt $((${{ inputs.failure-count }})) ]]; then
+           msg="Secrets were detected in code. $RESULT file(s) affected. Review artifact file for more information."
+           echo $msg
         else
            echo "No secrets detected."
         fi
