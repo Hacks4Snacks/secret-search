@@ -1,5 +1,10 @@
 name: "secret-search"
 description: "Detect secrets within a code base with Yelp's detect-secrets tool"
+inputs:
+  exclude-file:
+    description: "File to Exclude from the scan"
+    required: false
+    default: "NOFILETOEXCLUDE"
 runs:
   using: "composite"
   steps:
@@ -22,7 +27,7 @@ runs:
 
       run: |
         detect-secrets --version
-        detect-secrets scan --all-files --force-use-all-plugins --exclude-files FETCH_HEAD > ${{ env.Pipeline.Workspace }}/tmp/detect-secrets.json
+        detect-secrets scan --all-files --force-use-all-plugins --exclude-files FETCH_HEAD --exclude-files ${{ inputs.exclude-file }} > ${{ env.Pipeline.Workspace }}/tmp/detect-secrets.json
       shell: bash
 
     - name: Publish results in the Pipeline Artifact
